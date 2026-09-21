@@ -1,6 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum PlayerState
+{
+    Normal,
+    pickUp,
+}
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController controller;
     private float verticalVelocity;
+
+    private PlayerState currentState = PlayerState.Normal;
 
     private void Awake()
     {
@@ -37,6 +45,13 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        //상태와 관계없이 중력은 계속 적용한다.
+        ApplyGravity();
+
+        //Normal 상태가 아니면 이동 입력을 받지 않는다.
+        if (currentState != PlayerState.Normal) return;
+
+        HandleMovement(keyboard);
 
         // 1. WASD 입력
         Vector2 input = Vector2.zero;
@@ -141,6 +156,48 @@ public class PlayerController : MonoBehaviour
 
         animator.SetFloat("speed", animationSpeed, 0.1f, Time.deltaTime);
     }
+    private void ApplyGravity()
+    {
+        if (controller.isGrounded && verticalVelocity < 0f)
+        {
+            verticalVelocity = -2f;
+        }
+        else
+        {
+            verticalVelocity += gravity * Time.deltaTime;
+        }
 
+        controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
 
+    }
+    private void HandleMovement(Keyboard keyboard)
+    {
+        Vector2 input = Vector2.zero;
+
+        if (keyboard.aKey.isPressed)
+            input.x -= 1f;
+
+        if (keyboard.dKey.isPressed)
+            input.x += 1f;
+
+        if (keyboard.sKey.isPressed)
+            input.y -= 1f;
+
+        if (keyboard.wKey.isPressed)
+            input.y += 1f;
+
+        input = Vector2.ClampMagnitude(input, 1f);
+
+    }
+    public void ChangeState(PlayerState newState)
+    {
+        currentState = newState;
+
+        if (currentState != PlayerState.Normal)
+        {
+            animator.SetFloat("speed", 0);
+        }
+
+        Debug.Log("현재 상태 : " + currentState);
+    }
 }

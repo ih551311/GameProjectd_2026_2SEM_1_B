@@ -1,203 +1,144 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum PlayerState
 {
     Normal,
-    pickUp,
+    pickUp
 }
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
-    [SerializeField] private Transform cameraTransform;
+    [Header("이동")]
+    public float moveSpeed = 5f;
+    public float jumpPower = 5f;
+    public float gravity = -20f;
 
-    [Header("이동 설정")]
-    [SerializeField] private float walkSpeed = 3f;
-    [SerializeField] private float runSpeed = 6f;
-    [SerializeField] private float rotationSpeed = 10f;
+    [Header("카메라")]
+    public float mouseSensitivity = 0.2f;
+    public Transform cameraPivot;
+    public Transform cameraTransform;
 
-    [Header("바닥 설정")]
-    [SerializeField] private float gravity = -20f;
-
-    private CharacterController controller;
+    private Vector2 moveInput;
+    private Vector2 lookInput;
+    private bool isRunning;
+    private float pitch = 20f;
     private float verticalVelocity;
-
+    private CharacterController controller;
     private PlayerState currentState = PlayerState.Normal;
 
-    private void Awake()
+    void Start()
     {
         controller = GetComponent<CharacterController>();
 
-        // Camera Transform을 직접 넣지 않았으면 Main Camera를 자동으로 찾음
-        if (cameraTransform == null && Camera.main != null)
-        {
-            cameraTransform = Camera.main.transform;
-        }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    private void Update()
+    public void OnMove(InputValue value)
     {
-        Keyboard keyboard = Keyboard.current;
+        moveInput = value.Get<Vector2>();
+    }
 
-        if (keyboard == null)
-        {
-            return;
-        }
-        //상태와 관계없이 중력은 계속 적용한다.
-        ApplyGravity();
+    public void OnLook(InputValue value)
+    {
+        lookInput = value.Get<Vector2>();
+    }
 
-        //Normal 상태가 아니면 이동 입력을 받지 않는다.
+    public void OnJump(InputValue value)
+    {
         if (currentState != PlayerState.Normal) return;
 
-        HandleMovement(keyboard);
-
-        // 1. WASD 입력
-        Vector2 input = Vector2.zero;
-
-        if (keyboard.aKey.isPressed)
-            input.x -= 1f;
-
-        if (keyboard.dKey.isPressed)
-            input.x += 1f;
-
-        if (keyboard.sKey.isPressed)
-            input.y -= 1f;
-
-        if (keyboard.wKey.isPressed)
-            input.y += 1f;
-
-        input = Vector2.ClampMagnitude(input, 1f);
-
-
-        // 2. 카메라의 앞쪽과 오른쪽 방향
-        Vector3 cameraForward;
-        Vector3 cameraRight;
-
-        if (cameraTransform != null)
+        if (value.isPressed && controller != null && controller.isGrounded)
         {
-            cameraForward = cameraTransform.forward;
-            cameraRight = cameraTransform.right;
+            verticalVelocity = jumpPower;
         }
-        else
-        {
-            // 카메라를 못 찾았을 때 기본 방향 사용
-            cameraForward = Vector3.forward;
-            cameraRight = Vector3.right;
-        }
-
-        // 카메라의 위아래 기울기는 이동에 사용하지 않음
-        cameraForward.y = 0f;
-        cameraRight.y = 0f;
-
-        cameraForward.Normalize();
-        cameraRight.Normalize();
-
-
-        // 3. 카메라 기준 이동 방향
-        Vector3 moveDirection =
-            cameraForward * input.y +
-            cameraRight * input.x;
-
-        moveDirection =
-            Vector3.ClampMagnitude(moveDirection, 1f);
-
-
-        // 4. Shift 달리기
-        bool isRunning = keyboard.leftShiftKey.isPressed;
-
-        float currentSpeed =
-            isRunning ? runSpeed : walkSpeed;
-
-
-        // 5. 수평 이동
-        controller.Move(
-            moveDirection *
-            currentSpeed *
-            Time.deltaTime
-        );
-
-
-        // 6. 이동 방향으로 캐릭터 회전
-        if (moveDirection.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation =
-                Quaternion.LookRotation(moveDirection);
-
-            transform.rotation =
-                Quaternion.Slerp(
-                    transform.rotation,
-                    targetRotation,
-                    rotationSpeed * Time.deltaTime
-                );
-        }
-
-
-        // 7. 중력
-        if (controller.isGrounded && verticalVelocity < 0f)
-        {
-            verticalVelocity = -2f;
-        }
-        else
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-        }
-
-        controller.Move( Vector3.up * verticalVelocity * Time.deltaTime);
-
-        // 8. Idle, Walk, Run 애니메이션
-        float animationSpeed = 0f;
-
-        if (moveDirection.sqrMagnitude > 0.001f)
-        {
-            animationSpeed = isRunning ? 1f : 0.5f;
-        }
-
-        animator.SetFloat("speed", animationSpeed, 0.1f, Time.deltaTime);
     }
-    private void ApplyGravity()
+
+    public void OnSprint(InputValue value)
     {
-        if (controller.isGrounded && verticalVelocity < 0f)
-        {
-            verticalVelocity = -2f;
-        }
-        else
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-        }
-
-        controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-
+        isRunning = value.isPressed;
     }
-    private void HandleMovement(Keyboard keyboard)
-    {
-        Vector2 input = Vector2.zero;
 
-        if (keyboard.aKey.isPressed)
-            input.x -= 1f;
-
-        if (keyboard.dKey.isPressed)
-            input.x += 1f;
-
-        if (keyboard.sKey.isPressed)
-            input.y -= 1f;
-
-        if (keyboard.wKey.isPressed)
-            input.y += 1f;
-
-        input = Vector2.ClampMagnitude(input, 1f);
-
-    }
+    // 플레이어 상태 변경
     public void ChangeState(PlayerState newState)
     {
         currentState = newState;
 
         if (currentState != PlayerState.Normal)
         {
-            animator.SetFloat("speed", 0);
+            moveInput = Vector2.zero;
+        }
+    }
+
+    void Update()
+    {
+        if (controller == null) return;
+
+        // 바닥에 닿았을 때 중력 처리
+        if (controller.isGrounded && verticalVelocity < 0f)
+        {
+            verticalVelocity = -2f;
         }
 
-        Debug.Log("현재 상태 : " + currentState);
+        verticalVelocity += gravity * Time.deltaTime;
+
+        if (currentState == PlayerState.Normal)
+        {
+            // 마우스로 시점 회전
+            transform.Rotate(
+                Vector3.up,
+                lookInput.x * mouseSensitivity
+            );
+
+            pitch = Mathf.Clamp(
+                pitch - lookInput.y * mouseSensitivity,
+                -20f,
+                60f
+            );
+
+            if (cameraPivot != null)
+            {
+                cameraPivot.localRotation =
+                    Quaternion.Euler(pitch, 0f, 0f);
+            }
+
+            // 카메라 기준 이동
+            Transform view =
+                cameraTransform != null ? cameraTransform : transform;
+
+            Vector3 forward = view.forward;
+            Vector3 right = view.right;
+
+            forward.y = 0f;
+            right.y = 0f;
+
+            forward.Normalize();
+            right.Normalize();
+
+            Vector3 movement =
+                forward * moveInput.y +
+                right * moveInput.x;
+
+            movement = Vector3.ClampMagnitude(movement, 1f);
+
+            // 달리기 속도 적용
+            float speed = isRunning ? moveSpeed * 2f : moveSpeed;
+
+            controller.Move(
+                (movement * speed +
+                Vector3.up * verticalVelocity) *
+                Time.deltaTime
+            );
+        }
+        else
+        {
+            // 아이템 줍는 동안 이동 제한
+            controller.Move(
+                Vector3.up * verticalVelocity * Time.deltaTime
+            );
+        }
     }
 }

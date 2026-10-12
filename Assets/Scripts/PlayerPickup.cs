@@ -35,10 +35,10 @@ public class PlayerPickup : MonoBehaviour
         PickupItem closestItem = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (Collider col in colliders)
+        foreach (Collider itemCollider in colliders)
         {
             PickupItem item =
-                col.GetComponentInParent<PickupItem>();
+                itemCollider.GetComponentInParent<PickupItem>();
 
             if (item == null) continue;
 
@@ -70,10 +70,10 @@ public class PlayerPickup : MonoBehaviour
         Door closestDoor = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (Collider col in colliders)
+        foreach (Collider targetCollider in colliders)
         {
             Door door =
-                col.GetComponentInParent<Door>();
+                targetCollider.GetComponentInParent<Door>();
 
             if (door == null) continue;
 
@@ -105,10 +105,10 @@ public class PlayerPickup : MonoBehaviour
         NPC closestNPC = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach (Collider col in colliders)
+        foreach (Collider targetCollider in colliders)
         {
             NPC npc =
-                col.GetComponentInParent<NPC>();
+                targetCollider.GetComponentInParent<NPC>();
 
             if (npc == null) continue;
 
@@ -130,8 +130,6 @@ public class PlayerPickup : MonoBehaviour
     // 상호작용 안내 문구 표시
     private void ShowGuide()
     {
-        if (interactionUI == null) return;
-
         if (targetItem != null)
         {
             interactionUI.ShowGuide(
@@ -156,35 +154,12 @@ public class PlayerPickup : MonoBehaviour
         }
     }
 
-    // E키 상호작용
-    private void Interact()
-    {
-        if (targetItem != null)
-        {
-            StartCoroutine(PickupAnimation());
-        }
-        else if (targetDoor != null)
-        {
-            targetDoor.Interact();
-        }
-        else if (targetNPC != null)
-        {
-            if (interactionUI != null)
-            {
-                interactionUI.ShowDialogue(
-                    targetNPC.GetNPCName(),
-                    targetNPC.GetMessage()
-                );
-            }
-        }
-    }
-
     // 아이템 줍기 애니메이션
     private IEnumerator PickupAnimation()
     {
         isPickingUp = true;
 
-        // 현재 아이템 저장
+        // 현재 찾은 아이템 저장
         PickupItem itemToCollect = targetItem;
 
         if (itemToCollect == null)
@@ -211,7 +186,7 @@ public class PlayerPickup : MonoBehaviour
                 Quaternion.LookRotation(itemDirection);
         }
 
-        // 이동 금지
+        // 이동 제한
         if (playerController != null)
         {
             playerController.ChangeState(PlayerState.pickUp);
@@ -223,7 +198,7 @@ public class PlayerPickup : MonoBehaviour
             animator.CrossFade("PickUp01", 0.1f);
         }
 
-        // 아이템 획득 시점 대기
+        // 손이 아이템에 닿는 순간까지 기다림
         yield return new WaitForSeconds(
             Mathf.Max(0f, pickupMoment)
         );
@@ -234,7 +209,7 @@ public class PlayerPickup : MonoBehaviour
             itemToCollect.Collect();
         }
 
-        // 남은 애니메이션 시간 대기
+        // 남은 애니메이션 시간
         yield return new WaitForSeconds(
             Mathf.Max(0f, pickupDuration - pickupMoment)
         );
@@ -245,49 +220,44 @@ public class PlayerPickup : MonoBehaviour
             animator.CrossFade("Blend Tree", 0.1f);
         }
 
-        // 이동 허용
+        // 플레이어 이동 허용
         if (playerController != null)
         {
             playerController.ChangeState(PlayerState.Normal);
         }
 
-        // 상호작용 대상 초기화
         targetItem = null;
-        targetDoor = null;
-        targetNPC = null;
-
         isPickingUp = false;
     }
 
-    // 매 프레임 실행
     void Update()
     {
         if (isPickingUp) return;
 
-        // 주변 아이템, 문, NPC 탐색
+        // 가장 가까운 아이템 탐색
         targetItem = FindClosestItem();
+
+        // 가장 가까운 문 탐색
         targetDoor = FindClosestDoor();
+
+        // 가장 가까운 NPC 탐색
         targetNPC = FindClosestNPC();
 
         // 안내 UI 표시
-        ShowGuide();
+        if (interactionUI != null)
+        {
+            ShowGuide();
+        }
 
         Keyboard keyboard = Keyboard.current;
 
         if (keyboard == null) return;
 
-        // 상호작용 대상이 없으면 종료
-        if (targetItem == null &&
-            targetDoor == null &&
-            targetNPC == null)
+        // E키로 아이템 줍기
+        if (targetItem != null &&
+            keyboard.eKey.wasPressedThisFrame)
         {
-            return;
-        }
-
-        // E키를 누르면 상호작용
-        if (keyboard.eKey.wasPressedThisFrame)
-        {
-            Interact();
+            StartCoroutine(PickupAnimation());
         }
     }
 }

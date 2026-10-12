@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class PickupItem : MonoBehaviour
@@ -12,27 +13,38 @@ public class PickupItem : MonoBehaviour
     [SerializeField] private float floatingSpeed = 2f;
 
     private Vector3 startPosition;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         startPosition = transform.position;
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //아이템을 천천히 회전시킨다.
-        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime, Space.World);
+        // 아이템을 천천히 회전시킨다.
+        transform.Rotate(
+            Vector3.up,
+            rotationSpeed * Time.deltaTime,
+            Space.World
+        );
 
-        //아이템을 위아래로 움직인다.
+        // 아이템을 위아래로 움직인다.
         float y = Mathf.Sin(Time.time * floatingSpeed) * floatingHeight;
+
         transform.position = startPosition + Vector3.up * y;
     }
 
+    // 아이템을 획득한다.
     public void Collect()
     {
         Debug.Log(itemName + " " + amount + "개 획득");
+
         Destroy(gameObject);
+    }
+
+    // 아이템 이름을 반환한다.
+    public string GetItemName()
+    {
+        return itemName;
     }
 }

@@ -5,24 +5,81 @@ using UnityEngine.InputSystem;
 
 public class PlayerPickup : MonoBehaviour
 {
-    [Header("직접 연결")]
+    [Header("컴포넌트 연결")]
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private InteractionUI interactionUI;
 
-    [Header("아이템 탐색")]
+    [Header("상호작용 설정")]
     [SerializeField] private float detectionRadius = 2f;
 
-    [Header("줍기 모션")]
+    [Header("아이템 줍기 설정")]
     [SerializeField] private float pickupDuration = 1.2f;
     [SerializeField] private float pickupMoment = 0.55f;
 
     private PickupItem targetItem;
     private Door targetDoor;
     private NPC targetNPC;
+
     private bool isPickingUp;
 
-    // 가장 가까운 아이템 찾기
+    void Update()
+    {
+        if (isPickingUp) return;
+
+        // 주변의 아이템, 문, NPC를 탐색
+        targetItem = FindClosestItem();
+        targetDoor = FindClosestDoor();
+        targetNPC = FindClosestNPC();
+
+        // 상호작용 안내 표시
+        ShowGuide();
+
+        // 아무것도 없으면 종료
+        if (targetItem == null &&
+            targetDoor == null &&
+            targetNPC == null)
+        {
+            return;
+        }
+
+        Keyboard keyboard = Keyboard.current;
+
+        if (keyboard == null) return;
+
+        // E키 입력
+        if (keyboard.eKey.wasPressedThisFrame)
+        {
+            Debug.Log("E키 입력 성공!");
+            Interact();
+        }
+    }
+
+    private void Interact()
+    {
+        if (targetItem != null)
+        {
+            StartCoroutine(PickupAnimation());
+        }
+        else if (targetDoor != null)
+        {
+            Debug.Log("문 상호작용 성공!");
+            targetDoor.Interact();
+        }
+        else if (targetNPC != null)
+        {
+            Debug.Log("NPC 상호작용 성공!");
+
+            if (interactionUI != null)
+            {
+                interactionUI.ShowDialogue(
+                    targetNPC.GetNpcName(),
+                    targetNPC.GetMessage()
+                );
+            }
+        }
+    }
+
     private PickupItem FindClosestItem()
     {
         Collider[] colliders = Physics.OverlapSphere(
@@ -57,7 +114,6 @@ public class PlayerPickup : MonoBehaviour
         return closestItem;
     }
 
-    // 가장 가까운 문 찾기
     private Door FindClosestDoor()
     {
         Collider[] colliders = Physics.OverlapSphere(
@@ -92,7 +148,6 @@ public class PlayerPickup : MonoBehaviour
         return closestDoor;
     }
 
-    // 가장 가까운 NPC 찾기
     private NPC FindClosestNPC()
     {
         Collider[] colliders = Physics.OverlapSphere(
@@ -127,9 +182,10 @@ public class PlayerPickup : MonoBehaviour
         return closestNPC;
     }
 
-    // 상호작용 안내 문구 표시
     private void ShowGuide()
     {
+        if (interactionUI == null) return;
+
         if (targetItem != null)
         {
             interactionUI.ShowGuide(
@@ -150,16 +206,14 @@ public class PlayerPickup : MonoBehaviour
         }
         else
         {
-            interactionUI.HideGuide();
+            interactionUI.ShowGuide("");
         }
     }
 
-    // 아이템 줍기 애니메이션
     private IEnumerator PickupAnimation()
     {
         isPickingUp = true;
 
-        // 현재 찾은 아이템 저장
         PickupItem itemToCollect = targetItem;
 
         if (itemToCollect == null)
@@ -168,17 +222,11 @@ public class PlayerPickup : MonoBehaviour
             yield break;
         }
 
-        // 안내 UI 숨기기
-        if (interactionUI != null)
-        {
-            interactionUI.HideGuide();
-        }
-
         // 아이템 방향으로 회전
         Vector3 itemDirection =
             itemToCollect.transform.position - transform.position;
 
-        itemDirection.y = 0;
+        itemDirection.y = 0f;
 
         if (itemDirection.sqrMagnitude > 0.0001f)
         {
@@ -189,19 +237,16 @@ public class PlayerPickup : MonoBehaviour
         // 이동 제한
         if (playerController != null)
         {
-            playerController.ChangeState(PlayerState.pickUp);
+            playerController.ChangeState(PlayerState.Pickup);
         }
 
-        // 줍기 애니메이션 실행
+        // 줍기 애니메이션
         if (animator != null)
         {
             animator.CrossFade("PickUp01", 0.1f);
         }
 
-        // 손이 아이템에 닿는 순간까지 기다림
-        yield return new WaitForSeconds(
-            Mathf.Max(0f, pickupMoment)
-        );
+        yield return new WaitForSeconds(pickupMoment);
 
         // 아이템 획득
         if (itemToCollect != null)
@@ -209,7 +254,6 @@ public class PlayerPickup : MonoBehaviour
             itemToCollect.Collect();
         }
 
-        // 남은 애니메이션 시간
         yield return new WaitForSeconds(
             Mathf.Max(0f, pickupDuration - pickupMoment)
         );
@@ -220,7 +264,7 @@ public class PlayerPickup : MonoBehaviour
             animator.CrossFade("Blend Tree", 0.1f);
         }
 
-        // 플레이어 이동 허용
+        // 이동 허용
         if (playerController != null)
         {
             playerController.ChangeState(PlayerState.Normal);
@@ -228,36 +272,5 @@ public class PlayerPickup : MonoBehaviour
 
         targetItem = null;
         isPickingUp = false;
-    }
-
-    void Update()
-    {
-        if (isPickingUp) return;
-
-        // 가장 가까운 아이템 탐색
-        targetItem = FindClosestItem();
-
-        // 가장 가까운 문 탐색
-        targetDoor = FindClosestDoor();
-
-        // 가장 가까운 NPC 탐색
-        targetNPC = FindClosestNPC();
-
-        // 안내 UI 표시
-        if (interactionUI != null)
-        {
-            ShowGuide();
-        }
-
-        Keyboard keyboard = Keyboard.current;
-
-        if (keyboard == null) return;
-
-        // E키로 아이템 줍기
-        if (targetItem != null &&
-            keyboard.eKey.wasPressedThisFrame)
-        {
-            StartCoroutine(PickupAnimation());
-        }
     }
 }

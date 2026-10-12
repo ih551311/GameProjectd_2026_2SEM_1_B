@@ -1,77 +1,59 @@
-
 using UnityEngine;
 using TMPro;
 using System.Collections;
 
 public class InteractionUI : MonoBehaviour
 {
-    [Header("상호작용 안내")]
-    [SerializeField] private TextMeshProUGUI guideText;
+    [Header("UI 관련 기본 정보")]
+    [Tooltip("괜히 건드리진 말자")]
 
-    [Header("NPC 대화")]
+    [SerializeField] private TextMeshProUGUI guideText;
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
-    [SerializeField] private float dialogueDuration = 3.0f;
+    [SerializeField] private float dialogueDuration = 3.0f;     // 3초동안 보여주고 사라질 것 (보여주고 지울 예정)
 
     private Coroutine dialogueRoutine;
 
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         HideGuide();
-
-        if (dialoguePanel != null)
-        {
-            dialoguePanel.SetActive(false);
-        }
+        dialoguePanel.SetActive(false);
     }
 
-    // 상호작용 안내 표시
     public void ShowGuide(string message)
     {
-        if (guideText == null) return;
-
         guideText.gameObject.SetActive(true);
         guideText.text = message;
     }
 
-    // 상호작용 안내 숨기기
     public void HideGuide()
     {
-        if (guideText != null)
-        {
-            guideText.gameObject.SetActive(false);
-        }
+        guideText.gameObject.SetActive(false);
     }
 
-    // NPC 대화창 표시
+    // Update 는 코루틴만을 사용하기에 없앤다.
+
     public void ShowDialogue(string npcName, string message)
     {
-        if (dialoguePanel == null || dialogueText == null)
-        {
-            return;
-        }
-
         if (dialogueRoutine != null)
         {
             StopCoroutine(dialogueRoutine);
+
         }
 
-        dialogueRoutine = StartCoroutine(
-            DialogueRoutine(npcName, message)
-        );
+        dialogueRoutine = StartCoroutine(DialogueRoutine(npcName, message));
     }
 
-    // 일정 시간 후 대화창 자동 닫기
     private IEnumerator DialogueRoutine(string npcName, string message)
     {
         dialoguePanel.SetActive(true);
-
-        dialogueText.text = npcName + ": " + message;
+        dialogueText.text = npcName + "\n" + message;
 
         yield return new WaitForSeconds(dialogueDuration);
 
         dialoguePanel.SetActive(false);
-
         dialogueRoutine = null;
     }
+
 }

@@ -1,77 +1,59 @@
 
 using UnityEngine;
-using TMPro;
-using System.Collections;
 
-public class InteractionUI : MonoBehaviour
+public class Door : MonoBehaviour
 {
-    [Header("상호작용 안내")]
-    [SerializeField] private TextMeshProUGUI guideText;
+    [Header("문 설정")]
+    [SerializeField] private float openAngle = 90f;
+    [SerializeField] private float openSpeed = 3f;
 
-    [Header("NPC 대화")]
-    [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private TextMeshProUGUI dialogueText;
-    [SerializeField] private float dialogueDuration = 3.0f;
-
-    private Coroutine dialogueRoutine;
+    private bool isOpen;
+    private Quaternion closedRotation;
+    private Quaternion openRotation;
 
     void Start()
     {
-        HideGuide();
+        closedRotation = transform.localRotation;
 
-        if (dialoguePanel != null)
-        {
-            dialoguePanel.SetActive(false);
-        }
+        openRotation = closedRotation *
+            Quaternion.Euler(0f, openAngle, 0f);
     }
 
-    // 상호작용 안내 표시
-    public void ShowGuide(string message)
+    void Update()
     {
-        if (guideText == null) return;
+        Quaternion targetRotation;
 
-        guideText.gameObject.SetActive(true);
-        guideText.text = message;
-    }
-
-    // 상호작용 안내 숨기기
-    public void HideGuide()
-    {
-        if (guideText != null)
+        if (isOpen)
         {
-            guideText.gameObject.SetActive(false);
+            targetRotation = openRotation;
         }
-    }
-
-    // NPC 대화창 표시
-    public void ShowDialogue(string npcName, string message)
-    {
-        if (dialoguePanel == null || dialogueText == null)
+        else
         {
-            return;
+            targetRotation = closedRotation;
         }
 
-        if (dialogueRoutine != null)
-        {
-            StopCoroutine(dialogueRoutine);
-        }
-
-        dialogueRoutine = StartCoroutine(
-            DialogueRoutine(npcName, message)
+        transform.localRotation = Quaternion.Lerp(
+            transform.localRotation,
+            targetRotation,
+            openSpeed * Time.deltaTime
         );
     }
 
-    // 일정 시간 후 대화창 자동 닫기
-    private IEnumerator DialogueRoutine(string npcName, string message)
+    // 인터랙션 함수가 호출되었을 때
+    public void Interact()
     {
-        dialoguePanel.SetActive(true);
+        // bool 값을 뒤집는다.
+        isOpen = !isOpen;
+    }
 
-        dialogueText.text = npcName + ": " + message;
+    // 화면에 표시할 안내 문구
+    public string GetGuideText()
+    {
+        if (isOpen)
+        {
+            return "[E] 문 닫기";
+        }
 
-        yield return new WaitForSeconds(dialogueDuration);
-
-        dialoguePanel.SetActive(false);
-
-        dialogueRoutine = null;
+        return "[E] 문 열기";
     }
 }

@@ -156,7 +156,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -174,7 +174,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee9ec7ecd42326489a42a4b58231219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
-  npcName: "\uB9C8\uC744 \uC8FC\uBBFC"
   message: "\uB9C8\uC744\uC5D0 \uC628 \uAC83\uC744 \uD658\uC601\uD574!"
 --- !u!23 &89879548
 MeshRenderer:
@@ -307,10 +306,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: "\uD558\uC774\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 61e2afdd298f73c449a3a721fad28237, type: 2}
-  m_sharedMaterial: {fileID: -3109710306320842874, guid: 61e2afdd298f73c449a3a721fad28237, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c35fc72192df764b9a0443cc305c42c, type: 2}
+  m_sharedMaterial: {fileID: -5599302469696241693, guid: 9c35fc72192df764b9a0443cc305c42c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -334,8 +333,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 39.2
+  m_fontSizeBase: 39.2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -701,7 +700,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -920,7 +919,7 @@ GameObject:
   - component: {fileID: 313164014}
   - component: {fileID: 313164013}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: InteractionUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -940,7 +939,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionUI
   guideText: {fileID: 1159294501}
   dialoguePanel: {fileID: 461574672}
-  dialogueText: {fileID: 1159294501}
+  dialogueText: {fileID: 139557428}
   dialogueDuration: 3
 --- !u!4 &313164014
 Transform:
@@ -1326,8 +1325,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1808, y: -563}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1297, y: 605}
+  m_SizeDelta: {x: -632.9475, y: -518.1061}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &686349325
 GameObject:
@@ -1453,8 +1452,8 @@ Transform:
   m_GameObject: {fileID: 686349325}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.69, y: 0.79, z: 9.4}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 5.52, y: 0.79, z: 3.7}
+  m_LocalScale: {x: 0.7468, y: 1, z: 0.772}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1503,136 +1502,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1078973241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1078973246}
-  - component: {fileID: 1078973245}
-  - component: {fileID: 1078973244}
-  - component: {fileID: 1078973243}
-  - component: {fileID: 1078973242}
-  m_Layer: 0
-  m_Name: Cube (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1078973242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078973241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ed307d8176a7fa4db33dca7c87b205f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickupItem
-  itemName: "\uC544\uC774\uD15C"
-  amount: 1
-  rotationSpeed: 60
-  floatingHeight: 0.15
-  floatingSpeed: 2
---- !u!65 &1078973243
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078973241}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &1078973244
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078973241}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1078973245
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078973241}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1078973246
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078973241}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.03, y: 0.79, z: 7.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1762,8 +1631,8 @@ Transform:
   m_GameObject: {fileID: 1129095560}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.78, y: 0.79, z: 7.33}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 7.3, y: 0.79, z: 7.216}
+  m_LocalScale: {x: 0.7468, y: 1, z: 0.772}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1802,8 +1671,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 95, y: -319}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -0.000061035, y: -643}
+  m_SizeDelta: {x: 520.99, y: 55.3685}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1159294500
 CanvasRenderer:
@@ -1835,8 +1704,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 61e2afdd298f73c449a3a721fad28237, type: 2}
-  m_sharedMaterial: {fileID: -3109710306320842874, guid: 61e2afdd298f73c449a3a721fad28237, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c35fc72192df764b9a0443cc305c42c, type: 2}
+  m_sharedMaterial: {fileID: -5599302469696241693, guid: 9c35fc72192df764b9a0443cc305c42c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1860,8 +1729,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 36.5
+  m_fontSizeBase: 36.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2099,6 +1968,7 @@ GameObject:
   - component: {fileID: 1372101671}
   - component: {fileID: 1372101670}
   - component: {fileID: 1372101669}
+  - component: {fileID: 1372101673}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -2193,12 +2063,26 @@ Transform:
   m_GameObject: {fileID: 1372101668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1651, y: 1.6768, z: 5.09}
+  m_LocalPosition: {x: -1.1651, y: 1.6768, z: 2.38}
   m_LocalScale: {x: 0.22760028, y: 4.5737, z: 3.7145305}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1372101673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372101668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d318859c55b3ad44b84c9880684adff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Door
+  openAngle: 90
+  openSpeed: 3
 --- !u!1 &2085816719
 GameObject:
   m_ObjectHideFlags: 0
@@ -2232,12 +2116,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd12a0ed9a16a3439bc2a8eca21e8e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 5
-  jumpPower: 5
-  gravity: -20
-  mouseSensitivity: 0.2
-  cameraPivot: {fileID: 0}
+  animator: {fileID: 437102036}
   cameraTransform: {fileID: 330585546}
+  walkSpeed: 3
+  runSpeed: 6
+  rotationSpeed: 10
+  gravity: -20
 --- !u!143 &2085816721
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2350,7 +2234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPickup
   animator: {fileID: 437102036}
   playerController: {fileID: 2085816720}
-  interactionUI: {fileID: 0}
+  interactionUI: {fileID: 313164013}
   detectionRadius: 2
   pickupDuration: 1.2
   pickupMoment: 0.55
@@ -2364,7 +2248,6 @@ SceneRoots:
   - {fileID: 2085816724}
   - {fileID: 141374620}
   - {fileID: 686349330}
-  - {fileID: 1078973246}
   - {fileID: 1129095565}
   - {fileID: 1303035490}
   - {fileID: 1320826423}

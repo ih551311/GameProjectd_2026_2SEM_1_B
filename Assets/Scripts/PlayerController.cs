@@ -4,20 +4,18 @@ using UnityEngine.InputSystem;
 public enum PlayerState
 {
     Normal,
-    Pickup
+    Pickup,
+    Inventory
 }
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-
     [SerializeField] private Transform cameraTransform;
 
     [Header("이동 설정")]
-
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float runSpeed = 6f;
-
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private float gravity = -20f;
 
@@ -31,15 +29,11 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Update()
     {
+        // 상태와 상관없이 중력 적용
+        ApplyGravity();
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         Keyboard keyboard = Keyboard.current;
 
         if (keyboard == null)
@@ -47,27 +41,28 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // 상태 상관없이 적용되는 중력
-        ApplyGravity();
-
-        // Normal 상태가 아니라면 이동 입력을 받지 않는다
-        if (currentState != PlayerState.Normal) return;
+        // Normal 상태일 때만 이동 입력 처리
+        if (currentState != PlayerState.Normal)
+        {
+            return;
+        }
 
         HandleMovement(keyboard);
-
     }
 
     private void HandleMovement(Keyboard keyboard)
     {
-        // 1. 입력 구현
         Vector2 input = Vector2.zero;
 
         if (keyboard.aKey.isPressed)
             input.x -= 1f;
+
         if (keyboard.dKey.isPressed)
             input.x += 1f;
+
         if (keyboard.sKey.isPressed)
             input.y -= 1f;
+
         if (keyboard.wKey.isPressed)
             input.y += 1f;
 
@@ -76,13 +71,15 @@ public class PlayerController : MonoBehaviour
         Vector3 cameraForward = cameraTransform.forward;
         Vector3 cameraRight = cameraTransform.right;
 
-        cameraForward.y = 0;
-        cameraRight.y = 0;
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
 
         cameraForward.Normalize();
         cameraRight.Normalize();
 
-        Vector3 moveDirection = cameraForward * input.y + cameraRight * input.x;
+        Vector3 moveDirection =
+            cameraForward * input.y + cameraRight * input.x;
+
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
 
         bool isRunning = keyboard.leftShiftKey.isPressed;
@@ -90,25 +87,31 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
-        if (moveDirection.sqrMagnitude > 0.001)
+        if (moveDirection.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            Quaternion targetRotation =
+                Quaternion.LookRotation(moveDirection);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
         }
-
-
-
-        controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
-
 
         float animationSpeed = 0f;
 
-        if (moveDirection.sqrMagnitude > 0.001)
+        if (moveDirection.sqrMagnitude > 0.001f)
         {
             animationSpeed = isRunning ? 1f : 0.5f;
         }
 
-        animator.SetFloat("Speed", animationSpeed, 0.1f, Time.deltaTime);
+        animator.SetFloat(
+            "Speed",
+            animationSpeed,
+            0.1f,
+            Time.deltaTime
+        );
     }
 
     private void ApplyGravity()
@@ -131,10 +134,14 @@ public class PlayerController : MonoBehaviour
 
         if (currentState != PlayerState.Normal)
         {
-            animator.SetFloat("speed", 0);
-
+            animator.SetFloat("Speed", 0f);
         }
 
         Debug.Log("현재 상태 : " + currentState);
+    }
+
+    public bool IsNormalState()
+    {
+        return currentState == PlayerState.Normal;
     }
 }

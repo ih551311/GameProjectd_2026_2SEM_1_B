@@ -13,6 +13,9 @@ public class PickupItem : MonoBehaviour
     [SerializeField] private float floatingHeight = 0.15f;
     [SerializeField] private float floatingSpeed = 2f;
 
+    [TextArea]
+    [SerializeField] private string description = " 이 아이템  설명이 없습니다.";
+
     private SimpleInventory inventory;
 
     private Vector3 startPosition;
@@ -49,7 +52,7 @@ public class PickupItem : MonoBehaviour
             return;
         }
 
-        if (inventory.AddItem(itemName, amount) == false)
+        if (inventory.AddItem(itemName, amount, description) == false)
         {
             return;
         }
@@ -63,6 +66,7 @@ public class PickupItem : MonoBehaviour
 
         Destroy(gameObject);
     }
+
 
     public string GetItemName()
     {

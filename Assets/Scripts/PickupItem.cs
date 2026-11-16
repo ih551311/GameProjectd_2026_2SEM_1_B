@@ -80,4 +80,4 @@ public class PickupItem : MonoBehaviour
     {
         return itemName;
     }
-}
+}   

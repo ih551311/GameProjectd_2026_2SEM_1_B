@@ -17,6 +17,7 @@ public class PickupItem : MonoBehaviour
     [SerializeField] private string description = " 이 아이템  설명이 없습니다.";
 
     private SimpleInventory inventory;
+    private AchievementManager achievementManager;
 
     private Vector3 startPosition;
 
@@ -24,6 +25,7 @@ public class PickupItem : MonoBehaviour
     {
         questManager = FindFirstObjectByType<QuestManager>();
         inventory = FindAnyObjectByType<SimpleInventory>();
+        achievementManager = FindFirstObjectByType<AchievementManager>();
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -62,6 +64,12 @@ public class PickupItem : MonoBehaviour
         if (questManager != null)
         {
             questManager.AddQuestItem(itemName, amount);
+        }
+
+        if (achievementManager != null)
+        {
+            achievementManager.ItemCollected(amount);
+            achievementManager.ItemCollectedByName(itemName);
         }
 
         Destroy(gameObject);
